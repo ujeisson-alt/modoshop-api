@@ -1,0 +1,92 @@
+erDiagram
+    USERS ||--o{ ORDERS : "places"
+    CATEGORIES ||--o{ CATEGORIES : "parent of"
+    CATEGORIES ||--o{ PRODUCTS : "groups"
+    PRODUCTS ||--|{ PRODUCT_VARIANTS : "has"
+    PRODUCT_VARIANTS ||--|| STOCK : "tracked by"
+    PRODUCT_VARIANTS ||--o{ ORDER_ITEMS : "sold as"
+    COUPONS |o--o{ ORDERS : "applied to"
+    ORDERS ||--|{ ORDER_ITEMS : "contains"
+    ORDERS ||--|| PAYMENTS : "paid by"
+
+    USERS {
+        int id PK
+        varchar name
+        varchar email UK
+        varchar password "bcrypt hash"
+        enum role "CUSTOMER | ADMIN"
+        varchar phone
+        text address
+        boolean is_active
+        datetime created_at
+    }
+    CATEGORIES {
+        int id PK
+        varchar name
+        varchar slug UK
+        int parent_id FK
+        boolean is_active
+    }
+    PRODUCTS {
+        int id PK
+        varchar name
+        text description
+        decimal base_price
+        int category_id FK
+        varchar brand
+        json images_json
+        boolean is_active
+    }
+    PRODUCT_VARIANTS {
+        int id PK
+        int product_id FK
+        varchar size
+        varchar color
+        varchar sku UK
+        decimal price_modifier
+    }
+    STOCK {
+        int id PK
+        int variant_id FK "UNIQUE"
+        int quantity
+        int reserved_quantity
+        datetime last_updated
+    }
+    COUPONS {
+        int id PK
+        varchar code UK
+        enum type "PERCENTAGE | FIXED"
+        decimal value
+        decimal min_order_amount
+        int max_uses "NULL = unlimited"
+        int used_count
+        datetime expires_at
+        boolean is_active
+    }
+    ORDERS {
+        int id PK
+        int user_id FK
+        int coupon_id FK
+        enum status
+        decimal subtotal
+        decimal discount_amount
+        decimal total
+        text shipping_address
+        datetime created_at
+    }
+    ORDER_ITEMS {
+        int id PK
+        int order_id FK
+        int variant_id FK
+        int quantity
+        decimal unit_price
+    }
+    PAYMENTS {
+        int id PK
+        int order_id FK "UNIQUE"
+        enum status
+        enum method
+        decimal amount
+        varchar external_ref
+        datetime processed_at
+    }
