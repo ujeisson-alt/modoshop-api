@@ -1,0 +1,55 @@
+# Levanta la API + MySQL 8 + Redis 7 + MongoDB 7 con un solo comando:
+#   docker compose up --build
+# La base se crea y se puebla automáticamente con database/schema.sql y database/seed.sql
+services:
+  mysql:
+    image: mysql:8.0
+    environment:
+      MYSQL_ROOT_PASSWORD: modoshop
+      MYSQL_DATABASE: modoshop_db
+    ports: ["3306:3306"]
+    volumes:
+      - ./database/schema.sql:/docker-entrypoint-initdb.d/01-schema.sql:ro
+      - ./database/seed.sql:/docker-entrypoint-initdb.d/02-seed.sql:ro
+      - mysql_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-pmodoshop"]
+      interval: 5s
+      retries: 20
+
+  redis:
+    image: redis:7-alpine
+    command: ["redis-server", "--appendonly", "yes"]
+    ports: ["6379:6379"]
+    volumes: [redis_data:/data]
+
+  mongo:
+    image: mongo:7
+    ports: ["27017:27017"]
+    volumes: [mongo_data:/data/db]
+
+  api:
+    build: .
+    depends_on:
+      mysql: { condition: service_healthy }
+      redis: { condition: service_started }
+      mongo: { condition: service_started }
+    ports: ["3000:3000"]
+    environment:
+      PORT: 3000
+      NODE_ENV: production
+      DB_HOST: mysql
+      DB_PORT: 3306
+      DB_USER: root
+      DB_PASSWORD: modoshop
+      DB_NAME: modoshop_db
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      MONGODB_URI: mongodb://mongo:27017/modoshop_logs
+      JWT_SECRET: docker_compose_local_secret_change_me_32_chars
+      PAYMENT_SUCCESS_RATE: 0.9
+
+volumes:
+  mysql_data:
+  redis_data:
+  mongo_data:
