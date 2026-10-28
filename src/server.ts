@@ -3,12 +3,14 @@ import app from './app';
 import { connectMySQL, sequelize } from './config/database';
 import { connectRedis, redis } from './config/redis';
 import { connectMongoDB } from './config/mongodb';
+import { ensureDatabaseSchema } from './config/bootstrap';
 import mongoose from 'mongoose';
 import { logger } from './utils/logger';
 
 const start = async (): Promise<void> => {
   try {
     await connectMySQL();
+    await ensureDatabaseSchema();
     await connectRedis();
     await connectMongoDB();
   } catch (err) {
