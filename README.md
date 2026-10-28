@@ -16,8 +16,9 @@ E-commerce REST API for **ModoShop S.A.**, a fashion retailer. Built with **Node
 ![MongoDB](https://img.shields.io/badge/MongoDB-logs-47A248?logo=mongodb&logoColor=white)
 ![Tests](https://img.shields.io/badge/tests-43_passing-brightgreen)
 
-> **Production URL:** _pending deploy — see [Deployment](#-deployment-railway--upstash)_
-> Once deployed, the base URL will be `https://<your-app>.up.railway.app/api/v1`.
+> **🌐 Live API:** https://modoshop-api-production.up.railway.app
+> Base URL `https://modoshop-api-production.up.railway.app/api/v1` · Health check: [`/health`](https://modoshop-api-production.up.railway.app/health) · Catalog: [`/api/v1/products`](https://modoshop-api-production.up.railway.app/api/v1/products)
+> Deployed on Railway (API + MySQL + Redis + MongoDB). Use the test users below to try the full checkout flow.
 
 ---
 
@@ -310,7 +311,9 @@ With `DB_AUTO_SETUP=true` the API creates the tables, view, stored procedure and
    | `NODE_ENV` | `production` |
    | `DB_AUTO_SETUP` | `true` |
 
-5. *Settings → Networking → Generate Domain*, point the Postman `baseUrl` to `https://<domain>/api/v1` and run the three flows. Every push to `main` redeploys automatically.
+5. *Settings → Networking → Generate Domain*, point the Postman `baseUrl` to `https://<domain>/api/v1` (or import `docs/postman/ModoShop.production.postman_environment.json`) and run the three flows. With the Railway GitHub App authorized, every push to `main` redeploys automatically.
+
+> The live deployment uses Railway's own Redis and MongoDB services connected through reference variables (`${{Redis.REDIS_URL}}`, `${{MongoDB.MONGO_URL}}`), so no credentials are copied by hand.
 
 ## 🧠 Design decisions
 
