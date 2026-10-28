@@ -5,7 +5,11 @@ import { sequelize } from './database';
 import { logger } from '../utils/logger';
 import { splitStatements, stripDatabaseSelection } from '../utils/sqlSplitter';
 
-const SQL_DIR = path.resolve(__dirname, '..', '..', 'database');
+// dist/database (copiado en el build) o ./database en desarrollo con ts-node
+const SQL_DIR =
+  [path.resolve(__dirname, '..', 'database'), path.resolve(__dirname, '..', '..', 'database')].find((dir) =>
+    fs.existsSync(path.join(dir, 'schema.sql')),
+  ) ?? path.resolve(process.cwd(), 'database');
 
 const runFile = async (file: string): Promise<number> => {
   const raw = fs.readFileSync(path.join(SQL_DIR, file), 'utf8');
