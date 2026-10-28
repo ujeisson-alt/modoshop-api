@@ -9,7 +9,7 @@
   },
   "scripts": {
     "dev": "nodemon --watch src --ext ts --exec ts-node src/server.ts",
-    "build": "tsc",
+    "build": "tsc && node -e \"require('fs').cpSync('database','dist/database',{recursive:true})\"",
     "start": "node dist/server.js",
     "db:setup": "ts-node scripts/db-setup.ts",
     "test": "jest",

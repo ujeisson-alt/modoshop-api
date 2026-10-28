@@ -5,6 +5,7 @@ COPY package*.json ./
 RUN npm ci
 COPY tsconfig.json ./
 COPY src ./src
+COPY database ./database
 RUN npm run build
 
 # ---------- runtime ----------
