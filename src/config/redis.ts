@@ -11,6 +11,7 @@ const createRedisClient = (): Redis => {
     return new Redis(env.redis.url, {
       retryStrategy,
       lazyConnect: true,
+      family: 0, // IPv4 + IPv6 (la red privada de Railway usa IPv6)
       ...(useTls ? { tls: { rejectUnauthorized: false } } : {}),
     });
   }

@@ -39,7 +39,8 @@ export const env = {
     password: process.env.REDIS_PASSWORD || undefined,
     cartTtl: toInt(process.env.REDIS_TTL_CART, 86400),
   },
-  mongoUri: process.env.MONGODB_URI ?? '',
+  mongoUri: process.env.MONGODB_URI ?? process.env.MONGO_URL ?? '',
+  mongoDbName: process.env.MONGODB_DB ?? 'modoshop_logs',
   jwt: {
     secret: jwtSecret || 'dev_only_secret_change_me_please_32chars!!',
     expiresIn: process.env.JWT_EXPIRES_IN ?? '24h',

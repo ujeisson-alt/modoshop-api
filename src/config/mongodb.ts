@@ -12,7 +12,7 @@ export const connectMongoDB = async (): Promise<void> => {
     return;
   }
   try {
-    await mongoose.connect(env.mongoUri, { serverSelectionTimeoutMS: 5000 });
+    await mongoose.connect(env.mongoUri, { serverSelectionTimeoutMS: 5000, dbName: env.mongoDbName });
     logger.info('✅ MongoDB conectado');
   } catch (err) {
     logger.error('❌ No se pudo conectar a MongoDB (la API continúa sin logs)', err);
